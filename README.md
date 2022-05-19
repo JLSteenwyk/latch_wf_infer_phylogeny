@@ -28,14 +28,14 @@
 ## About
 IQTREE infers phylogenies from multiple sequence alignments.
 
-<br /><br />
+<br />
 
 If you found IQTREE useful, please cite *IQ-TREE 2: New models and efficient
 methods for phylogenetic inference in the genomic era*. Minh et al. 2020,
 Molecular Biology and Evolution. doi:
 [10.1093/molbev/msaa015](https://doi.org/10.1093/molbev/msaa015).
 
-<br /><br />
+<br />
 
 To run IQTREE, user's must provide a minimum a multiple sequence
 alignment. This workflow conducts automated substitution matrix
