@@ -1,6 +1,11 @@
-<a href="https://latch.bio/">
-    <img src="images/latch_logo.png">
-</a>
+<p align="center">
+    <a href="https://latch.bio/">
+        <img src="images/latch_logo.png" width=37.5%>
+    </a>
+    <a href="https://latch.bio/">
+        <img src="images/iqtree_logo.svg" width=18%>
+    </a>
+</p>
 
 <p align="center">
     <a href="https://console.latch.bio/explore/60254/info">
