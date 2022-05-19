@@ -8,15 +8,20 @@ import subprocess
 from typing import Optional
 
 from latch import small_task, workflow
-from latch.types import LatchFile
+from latch.types import LatchFile, LatchDir #import LatchDir to use a directory as output
 
+import os
 
 @small_task
 def infer_phylogeny_task(
     input_alignment: LatchFile,
+    output_dir: LatchDir,
     output_prefix: Optional[str] = None,
     ufboot_reps: Optional[int] = 1000
-    ) -> LatchFile:
+    ) -> LatchDir:
+
+    local_dir = "/root/iqtree_output/" #local directory to put output files in
+    local_prefix = os.path.join(local_dir, output_prefix) # iqtree prefix including local path
 
     ## logic for how to align seqs
     _iqtree_cmd = [
@@ -24,28 +29,25 @@ def infer_phylogeny_task(
         "-s",
         input_alignment.local_path,
         "-pre",
-        output_prefix,
+        str(local_prefix), #this should probably be handled differently, since using empty prefix with -pre option causes a crash
         "-nt",
         "AUTO",
         "-m",
-        "TEST",
+        "K80",
         "-bb",
-        ufboot_reps
+        str(ufboot_reps) # the number needs to be formatted as string for the command to run properly
     ]
 
-    # # figuring out how to write out multiple files based on prefix
-    # with open(out_file, "w") as f:
-    #     subprocess.call(_iqtree_cmd, stdout=f)
-
-    # return LatchFile(str(output_prefix), f"latch:///{output_prefix.name}")
-
+    subprocess.run(_iqtree_cmd)
+    return LatchDir(local_dir, output_dir.remote_path) #this returns the directory in which all output files are stored
 
 @workflow
 def infer_phylogeny(
     input_alignment: LatchFile,
+    output_dir: LatchDir,
     output_prefix: Optional[str] = None,
     ufboot_reps: Optional[int] = 1000
-    ) -> LatchFile:
+    ) -> LatchDir:
     """
     IQTREE2
     ----
@@ -80,7 +82,7 @@ def infer_phylogeny(
     Args:
 
         input_alignment:
-            Input multiple sequence alignment of nucleotide or amino acid sequences 
+            Input multiple sequence alignment of nucleotide or amino acid sequences
             __metadata__:
                 display_name: "Input multi-FASTA file"
                 appearance:
@@ -100,10 +102,18 @@ def infer_phylogeny(
 				appearance:
 					comment: "Prefix of outputted files."
 
+        output_dir:
+            Output directory
+			__metadata__:
+				display_name: "Output directory"
+				appearance:
+					comment: "Output directory"
+
     """
 
     return infer_phylogeny_task(
         input_alignment=input_alignment,
+        output_dir=output_dir,
         output_prefix=output_prefix,
         ufboot_reps=ufboot_reps
     )
