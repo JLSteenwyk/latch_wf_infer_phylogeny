@@ -2,13 +2,12 @@
 align sequences using MAFFT
 """
 
-from enum import Enum
-from pathlib import Path
 import subprocess
 from typing import Optional
 
 from latch import small_task, workflow
-from latch.types import LatchFile, LatchDir #import LatchDir to use a directory as output
+from latch.types import LatchFile, LatchDir
+
 
 import os
 
@@ -20,26 +19,30 @@ def infer_phylogeny_task(
     ufboot_reps: Optional[int] = 1000
     ) -> LatchDir:
 
+    # if no output prefix is specified, assign output prefix to "iqtree_on_latch"
+    if isinstance(output_prefix, type(None)):
+        output_prefix = "iqtree_on_latch"
+
     local_dir = "/root/iqtree_output/" #local directory to put output files in
     local_prefix = os.path.join(local_dir, output_prefix) # iqtree prefix including local path
 
-    ## logic for how to align seqs
+    # iqtree command
     _iqtree_cmd = [
         "iqtree2",
         "-s",
         input_alignment.local_path,
         "-pre",
-        str(local_prefix), #this should probably be handled differently, since using empty prefix with -pre option causes a crash
+        str(local_prefix),
         "-nt",
         "AUTO",
         "-m",
-        "K80",
+        "TEST",
         "-bb",
-        str(ufboot_reps) # the number needs to be formatted as string for the command to run properly
+        str(ufboot_reps)
     ]
 
     subprocess.run(_iqtree_cmd)
-    return LatchDir(local_dir, output_dir.remote_path) #this returns the directory in which all output files are stored
+    return LatchDir(local_dir, output_dir.remote_path) # this returns the directory in which all output files are stored
 
 @workflow
 def infer_phylogeny(
