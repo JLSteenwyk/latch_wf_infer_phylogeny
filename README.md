@@ -27,8 +27,6 @@
 
 </br>
 
-# THIS WORKFLOW IS STILL IN DEVELOPMENT AND IS CURRENTLY NOT AVAILABLE
-
 # IQTREE, efficient phylogenomic/phylogenetic inference
 ## About
 IQTREE infers phylogenies from multiple sequence alignments.
