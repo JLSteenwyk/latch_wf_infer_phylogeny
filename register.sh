@@ -1,0 +1,1 @@
+latch register wf.orthosnap
